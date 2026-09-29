@@ -1,14 +1,14 @@
 ﻿string viewTodos(string[] list)
 {   string text = "Список дел: ";
-    foreach (var i in list)
+    foreach (var task in list)
     {   
-        if (Array.IndexOf(list,i) == 0 )
+        if (Array.IndexOf(list,task) == 0 )
         {
-            text = text + "" + i;
+            text = text + "" + task;
         }
         else
         {
-            text = text + ", " + i;
+            text = text + ", " + task;
         }
         
     }
@@ -42,7 +42,7 @@ while (true)
     {
         Console.Write("Введите команду: ");
         var command = Console.ReadLine();
-        var res = command switch
+        var reslut_cmd = command switch
         {
             "help" => "help - Вызвать список команд\nprofile - Получить данные профиля\nadd \"задача\" - Добавить задачу в список\nview - Вывести все задачи\nexit - Выйти из ежедневника",
             "profile" => $"{name}, {surname}, {age}",
@@ -50,27 +50,27 @@ while (true)
             _ => "Команда не найдена"
             
         };
-        if  (res == "Команда не найдена")
+        if  (reslut_cmd == "Команда не найдена")
         {
             if (command.StartsWith("add"))
             {
                 if (todos.Contains(command.Substring(4)))
                 {
-                    res = "Нельзя записывать одни и те же дела";
+                    reslut_cmd = "Нельзя записывать одни и те же дела";
                 }
                 else if (todosFree < todos.Length)
                 {
                     todos[todosFree] = command.Substring(4);
                     todosFree ++;
-                    res = $"Добавлена задача: {command.Substring(4)}";
+                    reslut_cmd = $"Добавлена задача: {command.Substring(4)}";
                 }
                 else
                 {
                     string[] todos2 = new string[todos.Length*2];
                     int todos2Count = 0;
-                    foreach (var i in todos)
+                    foreach (var copy_task in todos)
                     {
-                        todos2[todos2Count] = i;
+                        todos2[todos2Count] = copy_task;
                         todos2Count ++;
                     }
                     todos2Count = 0;
@@ -81,22 +81,18 @@ while (true)
             }
             else if (command == "exit")
             {
-                res = "Осуществлен выход из приложения";
+                reslut_cmd = "Осуществлен выход из приложения";
                 break;
             }
             
             
         }
         
-        Console.WriteLine(res);
+        Console.WriteLine(reslut_cmd);
 
 
 
     }
 
 
-// хорошо было придумано писать условия оценивания Шестым пунктом в задание: 6. Делайте коммит после 
-// каждого изменения, если задание будет отправлено одним коммитом — задание будет оцениваться в два раза меньше.
-
-// я с 11 часов ночи сидел делал ;( и только в 1:50 прочитал 6 пункт
 
