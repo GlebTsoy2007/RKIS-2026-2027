@@ -104,6 +104,20 @@ public class TodoList
             Console.WriteLine($"Добавлена задача: {command.Substring(4)}");
         }
     }
+    public void DoneTask(string commandIndexDone)
+    {
+        string indexString = commandIndexDone.Substring(5);
+        if (int.TryParse(indexString, out int index)){ 
+            statusList[index] = true;
+            dateList[index] = DateTime.Now;
+            Console.WriteLine($"У задачи \"{taskList[index]}\" статус изменен на {statusList[index]} и время на {dateList[index]}");
+        }
+        else
+        {   
+            Console.WriteLine("Необходимо записывать число в поле индекса!");
+        }
+    }
+
     //Функция добавления новой задачи
     public void Append(string task)
     {
@@ -190,6 +204,10 @@ public class InputCommand
             {
                 AddList(cmd);
             }
+            else if (cmd.StartsWith("done"))
+            {
+                DoneList(cmd);
+            }
             else if (cmd == "exit")
             {
                 break;
@@ -223,6 +241,10 @@ public class InputCommand
     private void AddList(string text)
     {
         _list.CheckItemToList(text);
+    }
+    private void DoneList(string text)
+    {
+        _list.DoneTask(text);
     }
 
 }
