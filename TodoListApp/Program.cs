@@ -79,17 +79,19 @@ public class User
 }
 
 
-
+// Класс списка дел
 public class TodoList
 {
     private string[] taskList = new string[2];
+    private bool[] statusList = new bool[2];
+    private DateTime[] dateList = new DateTime[2];
     private int taskCount = 0;
 
     public TodoList()
     {
 
     }
-
+    // Функция проверки наличия новой задачи
     public void CheckItemToList(string command)
     {
         if (taskList.Contains(command.Substring(4)))
@@ -102,44 +104,57 @@ public class TodoList
             Console.WriteLine($"Добавлена задача: {command.Substring(4)}");
         }
     }
-
+    //Функция добавления новой задачи
     public void Append(string task)
     {
         if (taskCount+1 > taskList.Length)
         {
             string[] copyTaskList = new string[taskList.Length + 2];
+            bool[] copyStatusList = new bool[statusList.Length + 2];
+            DateTime[] copyDateList = new DateTime[dateList.Length + 2];
             int countIndexForeach = 0;
             foreach (string copyTask in taskList)
             {
                 copyTaskList[countIndexForeach] = copyTask;
                 countIndexForeach ++;
             } 
+            countIndexForeach = 0;
+            foreach (bool copyStatus in statusList)
+            {
+                copyStatusList[countIndexForeach] = copyStatus;
+                countIndexForeach ++;
+            }
+            countIndexForeach = 0;
+            foreach (DateTime copyData in dateList)
+            {
+                copyDateList[countIndexForeach] = copyData;
+                countIndexForeach ++;
+            } 
             taskList = copyTaskList;
+            statusList = copyStatusList;
+            dateList = copyDateList;
         }
         taskList[taskCount] = task;
+        statusList[taskCount] = false;
+        dateList[taskCount] = DateTime.Now; 
         taskCount ++;
     }
-    
+    // Функция вывода списка задач
     public void ListPrint()
     {
-        string text = "Список дел: ";
+        string text = "---СПИСОК ДЕЛ--- ";
         foreach (var task in taskList)
         {   
-            if (Array.IndexOf(taskList,task) == 0 )
-            {
-                text = text + "" + task;
-            }
-            else
-            {
-                text = text + ", " + task;
-            }
+            int taskIndex = Array.IndexOf(taskList,task);
+            text = text + "\n" + $"{Array.IndexOf(taskList,task)}. {task} {statusList[taskIndex]} {dateList[taskIndex]}";
+
 
         }
         Console.WriteLine(text);
     }
 
 }
-
+// Класс для обработки команд
 public class InputCommand
 {
     public string cmd;
@@ -152,7 +167,7 @@ public class InputCommand
         _user = us;
         _list = list;
     }
-    
+    // Цикл обрабатывающий команды
     public void InputLoop()
     {
         while (true)
