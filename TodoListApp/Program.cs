@@ -108,6 +108,11 @@ public class TodoList
     {
         string indexString = commandIndexDone.Substring(5);
         if (int.TryParse(indexString, out int index)){ 
+            if (index > taskCount)
+            {
+                Console.WriteLine($"Задачи с индексом {index} не существует");
+                return;
+            }
             statusList[index] = true;
             dateList[index] = DateTime.Now;
             Console.WriteLine($"У задачи \"{taskList[index]}\" статус изменен на {statusList[index]} и время на {dateList[index]}");
@@ -115,6 +120,27 @@ public class TodoList
         else
         {   
             Console.WriteLine("Необходимо записывать число в поле индекса!");
+        }
+    }
+
+    public void UpdateTask(string commandIndexUpdate)
+    {
+        string[] commandSplit = commandIndexUpdate.Split(" ",3);
+        string task = commandSplit[2];
+        if (int.TryParse(commandSplit[1], out int index))
+        {
+            if (index > taskCount)
+            {
+                Console.WriteLine($"Задачи с индексом {index} не существует");
+                return;
+            }
+            taskList[index] = task;
+            dateList[index] = DateTime.Now;
+            Console.WriteLine($"Задача с индексом {index} была изменена на \"{task}\" и время на {dateList[index]}");
+        }
+        else
+        {
+            Console.WriteLine($"Необходимо записывать число в поле индекса!");
         }
     }
 
@@ -208,6 +234,10 @@ public class InputCommand
             {
                 DoneList(cmd);
             }
+            else if (cmd.StartsWith("update"))
+            {
+                UpdateList(cmd);
+            }
             else if (cmd == "exit")
             {
                 break;
@@ -245,6 +275,10 @@ public class InputCommand
     private void DoneList(string text)
     {
         _list.DoneTask(text);
+    }
+    private void UpdateList(string text)
+    {
+        _list.UpdateTask(text);
     }
 
 }
