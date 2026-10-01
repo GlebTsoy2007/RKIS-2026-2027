@@ -1,4 +1,8 @@
-﻿var mainList = new TodoList();
+﻿using System.Linq.Expressions;
+using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
+
+var mainList = new TodoList();
 var us = new User(Register());
 var comd = new InputCommand(us,mainList);
 comd.InputLoop();
@@ -87,6 +91,8 @@ public class TodoList
     private DateTime[] dateList = new DateTime[2];
     private int taskCount = 0;
 
+    private bool[] modeList = new bool[1]{false}; 
+
     public TodoList()
     {
 
@@ -147,38 +153,63 @@ public class TodoList
     //Функция добавления новой задачи
     public void Append(string task)
     {
-        if (taskCount+1 > taskList.Length)
+        if (modeList[0] == true)
         {
-            string[] copyTaskList = new string[taskList.Length + 2];
-            bool[] copyStatusList = new bool[statusList.Length + 2];
-            DateTime[] copyDateList = new DateTime[dateList.Length + 2];
-            int countIndexForeach = 0;
-            foreach (string copyTask in taskList)
+            while (true)
             {
-                copyTaskList[countIndexForeach] = copyTask;
-                countIndexForeach ++;
-            } 
-            countIndexForeach = 0;
-            foreach (bool copyStatus in statusList)
-            {
-                copyStatusList[countIndexForeach] = copyStatus;
-                countIndexForeach ++;
+                Console.Write($"Задача {taskCount}: ");
+                string taskModeLine = Console.ReadLine();
+                if (taskModeLine == "!end")
+                {
+                    break;
+                }
+                checkLengthList(taskModeLine);
+
             }
-            countIndexForeach = 0;
-            foreach (DateTime copyData in dateList)
-            {
-                copyDateList[countIndexForeach] = copyData;
-                countIndexForeach ++;
-            } 
-            taskList = copyTaskList;
-            statusList = copyStatusList;
-            dateList = copyDateList;
         }
-        taskList[taskCount] = task;
+        else
+        {
+            checkLengthList(task);
+            }
+
+        
+    }
+
+    private void checkLengthList(string taskCheck)
+    {
+        if (taskCount+1 > taskList.Length)
+            {
+                string[] copyTaskList = new string[taskList.Length + 2];
+                bool[] copyStatusList = new bool[statusList.Length + 2];
+                DateTime[] copyDateList = new DateTime[dateList.Length + 2];
+                int countIndexForeach = 0;
+                foreach (string copyTask in taskList)
+                {
+                    copyTaskList[countIndexForeach] = copyTask;
+                    countIndexForeach ++;
+                } 
+                countIndexForeach = 0;
+                foreach (bool copyStatus in statusList)
+                {
+                    copyStatusList[countIndexForeach] = copyStatus;
+                    countIndexForeach ++;
+                }
+                countIndexForeach = 0;
+                foreach (DateTime copyData in dateList)
+                {
+                    copyDateList[countIndexForeach] = copyData;
+                    countIndexForeach ++;
+                } 
+                taskList = copyTaskList;
+                statusList = copyStatusList;
+                dateList = copyDateList;
+            }
+        taskList[taskCount] = taskCheck;
         statusList[taskCount] = false;
         dateList[taskCount] = DateTime.Now; 
         taskCount ++;
     }
+
     // Функция вывода списка задач
     public void ListPrint()
     {
@@ -191,6 +222,18 @@ public class TodoList
 
         }
         Console.WriteLine(text);
+    }
+
+    public void MultiLineMode()
+    {
+        if(modeList[0] == true)
+        {
+            modeList[0] = false;
+        }
+        else
+        {
+            modeList[0] = true;
+        }
     }
 
 }
@@ -269,8 +312,16 @@ public class InputCommand
     }
 
     private void AddList(string text)
-    {
+    {   
+        if (text.Contains("--multiline") || text.Contains("-m"))
+        {
+            _list.MultiLineMode();
+        }
         _list.CheckItemToList(text);
+
+            
+
+        
     }
     private void DoneList(string text)
     {
