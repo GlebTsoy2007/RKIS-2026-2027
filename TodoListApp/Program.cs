@@ -98,7 +98,7 @@ public class TodoList
 
     }
     // Функция проверки наличия новой задачи
-    public void CheckItemToList(string command)
+    public void CheckItemToList(string command = "None")
     {
         if (taskList.Contains(command.Substring(4)))
         {
@@ -107,7 +107,6 @@ public class TodoList
         else
         {
             this.Append(command.Substring(4));
-            Console.WriteLine($"Добавлена задача: {command.Substring(4)}");
         }
     }
     public void DoneTask(string commandIndexDone)
@@ -151,26 +150,38 @@ public class TodoList
     }
 
     //Функция добавления новой задачи
-    public void Append(string task)
-    {
-        if (modeList[0] == true)
+    public void Append(string task = "-m")
+    {   
+        if (task.Trim() == "-m" || task.Trim() == "--multiline")
         {
-            while (true)
+            if (modeList[0] == true)
             {
-                Console.Write($"Задача {taskCount}: ");
-                string taskModeLine = Console.ReadLine();
-                if (taskModeLine == "!end")
+                while (true)
                 {
-                    break;
-                }
-                checkLengthList(taskModeLine);
+                    Console.Write($"Задача {taskCount}: ");
+                    string taskModeLine = Console.ReadLine();
+                    if (taskModeLine.Trim() == "!end")
+                    {
+                        break;
+                    }
+                    if (taskList.Contains(taskModeLine))
+                    {
+                        Console.WriteLine("Нельзя записывать одни и те же дела");
+                    }
+                    else
+                    {
+                        checkLengthList(taskModeLine);
+                    }
+                    
 
+                }
             }
         }
         else
         {
             checkLengthList(task);
-            }
+            Console.WriteLine($"Добавлена задача: {task}");
+        }
 
         
     }
